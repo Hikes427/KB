@@ -1,7 +1,12 @@
+from pathlib import Path
 import chromadb
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+CHROMA_PATH = BASE_DIR / "chroma_db"
+
 client = chromadb.PersistentClient(
-    path="../chroma_db"
+    path=str(CHROMA_PATH)
 )
 
 collection = client.get_collection(
