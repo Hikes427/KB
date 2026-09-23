@@ -3,6 +3,7 @@ from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 from vector_store import store_chunks
+import pickle
 
 model = SentenceTransformer(
     "sentence-transformers/all-MiniLM-L6-v2"
@@ -78,6 +79,7 @@ def create_embeddings(chunks):
     return embeddings  
 
 def load_documents():
+    all_chunks = []
     print(f"PDF Directory: {PDF_DIR}")
     pdf_files = list(PDF_DIR.glob("*.pdf"))
 
@@ -90,6 +92,7 @@ def load_documents():
         text = extract_text_from_pdf(pdf_file)
 
         chunks = chunk_text(text)
+        all_chunks.extend(chunks)
 
         embeddings = create_embeddings(chunks)
 
@@ -98,8 +101,6 @@ def load_documents():
         metadatas = []
 
         for chunk_num, _ in enumerate(chunks):
-
-            metadata = dict(base_metadata)
 
             metadata = dict(base_metadata)
 
@@ -115,8 +116,12 @@ def load_documents():
             embeddings=embeddings,
             metadatas=metadatas
         )
-
         print(f"Chunks created: {len(chunks)}")
+
+    with open("chunks.pkl", "wb") as f:
+        pickle.dump(all_chunks, f)
+
+    print(f"Saved {len(all_chunks)} chunks to chunks.pkl")
 
 if __name__ == "__main__":
     load_documents()
