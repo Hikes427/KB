@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.retrieval import retrieve
+from app.llm import generate_answer
 
 app = FastAPI()
 
@@ -14,11 +15,21 @@ def ask(question: str):
 
     contexts = retrieve(question)
 
-    answer = f"""
-Based on retrieved AWS documentation:
+    context_text = "\n\n".join(contexts)
 
-{contexts[0]}
+    prompt = f"""
+Answer the question using ONLY the context below.
+
+Context:
+{context_text}
+
+Question:
+{question}
+
+Answer:
 """
+
+    answer = generate_answer(prompt)
 
     return {
         "question": question,

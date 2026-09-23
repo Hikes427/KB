@@ -1,14 +1,16 @@
-from ollama import Client
-client = Client(host="http://localhost:11434")
+import ollama
 
-def ask_llm(question: str) -> str:
- response = client.chat(
-    model="qwen2.5-coder:7b",
-    messages=[
-     {
-       "role": "user",
-       "content": question
-     }
-    ]
- )
- return response["message"]["content"]
+
+def generate_answer(prompt):
+
+    response = ollama.chat(
+        model="qwen2.5-coder:7b",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    return response["message"]["content"]
