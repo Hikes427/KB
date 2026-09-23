@@ -12,20 +12,17 @@ client = chromadb.PersistentClient(
 collection = client.get_or_create_collection(
     name="finance_docs"
 )
-def store_chunks(chunks):
-    ids = [f"chunk_{i}" for i in range(len(chunks))]
-
+def store_chunks(chunks, embeddings, metadatas):
+    ids = [
+    f"{metadatas[i]['document']}_chunk_{i}"
+    for i in range(len(chunks))
+]
     collection.add(
-        ids=ids,
-        documents=chunks
-    )
-
-    print(f"Stored {len(chunks)} chunks")
-results = collection.query(
-    query_texts=[
-        "declined transactions"
-    ],
-    n_results=3
+    ids=ids,
+    documents=chunks,
+    embeddings=embeddings,
+    metadatas=metadatas
 )
 
-print(results["documents"])
+    print(f"Stored {len(chunks)} chunks")
+

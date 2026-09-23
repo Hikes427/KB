@@ -11,9 +11,14 @@ def root():
 
 
 @app.get("/ask")
-def ask(question: str):
+def ask(
+    question: str,
+    domain: str | None = None,
+    classification: str | None = None
+):
 
-    contexts = retrieve(question)
+
+    contexts = retrieve(question, domain, classification)
 
     context_text = "\n\n".join(contexts)
 

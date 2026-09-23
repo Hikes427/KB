@@ -14,9 +14,24 @@ collection = client.get_collection(
 )
 
 
-def retrieve(query):
+def retrieve(
+    query,
+    domain=None,
+    classification=None
+):
+
+    where = {
+        key: value
+        for key, value in {
+            "domain": domain,
+            "classification": classification,
+        }.items()
+        if value is not None
+    } or None
+
     results = collection.query(
         query_texts=[query],
+        where=where,
         n_results=3
     )
 
