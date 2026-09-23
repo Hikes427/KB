@@ -20,14 +20,19 @@ def retrieve(
     classification=None
 ):
 
-    where = {
-        key: value
-        for key, value in {
-            "domain": domain,
-            "classification": classification,
-        }.items()
-        if value is not None
-    } or None
+    if domain and classification:
+        where = {
+            "$and": [
+                {"domain": domain},
+                {"classification": classification}
+            ]
+        }
+    elif domain:
+        where = {"domain": domain}
+    elif classification:
+        where = {"classification": classification}
+    else:
+        where = None
 
     results = collection.query(
         query_texts=[query],
@@ -35,14 +40,29 @@ def retrieve(
         n_results=3
     )
 
-    return results["documents"][0]
+    return {
+        "documents": results["documents"][0],
+        "metadatas": results["metadatas"][0],
+    }
 
 
 if __name__ == "__main__":
+
     results = retrieve(
-        "declined transactions"
+        query="declined transactions",
+        domain="finance",
+        classification="internal"
     )
 
-    for result in results:
-        print("\n" + "=" * 80)
-        print(result)
+    print("\nDOCUMENTS")
+    print("=" * 80)
+
+    for doc in results["documents"]:
+        print(doc[:500])
+        print()
+
+    print("\nMETADATA")
+    print("=" * 80)
+
+    for metadata in results["metadatas"]:
+        print(metadata)

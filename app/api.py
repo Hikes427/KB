@@ -37,6 +37,15 @@ Answer:
     answer = generate_answer(prompt)
 
     return {
-        "question": question,
-        "answer": answer
+        {
+  "question": "...",
+  "answer": "...",
+  "sources": [
+    {
+      "document": "wellarchitected-framework.pdf",
+      "classification": "public",
+      "owner": "aws"
+    }
+  ]
+}
     }
